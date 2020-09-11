@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferInt;
 
 public class Window {
 
@@ -36,9 +37,16 @@ public class Window {
     }
 
     public void update() {
-
         // Drawing to buffer strategy
         graphics.drawImage(image, 0, 0, canvas.getWidth(), canvas.getHeight(), null);
         bufferStrategy.show();
+    }
+
+    public BufferedImage getImage() {
+        return image;
+    }
+
+    public Canvas getCanvas() {
+        return canvas;
     }
 }
