@@ -1,10 +1,16 @@
 package com.mountech.engine;
 
+import com.mountech.events.Input;
+import org.jcp.xml.dsig.internal.dom.DOMSubTreeData;
+
+import java.awt.event.KeyEvent;
+
 public class GameContainer implements Runnable {
 
     private Thread thread;
     private Window window;
     private Renderer renderer;
+    private Input input;
 
     private boolean running = false;
     private final double UPDATE_CAP = 1.0 / 60.0;
@@ -19,6 +25,7 @@ public class GameContainer implements Runnable {
     public void start() {
         window = new Window(this);
         renderer = new Renderer(this);
+        input = new Input(this);
 
         thread = new Thread(this);
         thread.run();  // .start() will make separate thread, this will it main thread
@@ -47,6 +54,8 @@ public class GameContainer implements Runnable {
             while (unprocessedTime >= UPDATE_CAP) {
                 unprocessedTime -= UPDATE_CAP;
                 render = true;
+
+                input.update();
                 // TODO: update game
             }
 
