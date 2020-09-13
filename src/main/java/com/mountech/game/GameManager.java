@@ -3,23 +3,23 @@ package com.mountech.game;
 import com.mountech.engine.AbstractGame;
 import com.mountech.engine.GameContainer;
 import com.mountech.engine.Renderer;
+import com.mountech.gfx.Image;
 
 import java.awt.event.KeyEvent;
 
 public class GameManager extends AbstractGame {
+    private Image image;
 
     public GameManager() {
-
+        image = new Image("/test.png");
     }
 
     public void update(GameContainer gc, float dt) {
-        if(gc.getInput().isKeyDown(KeyEvent.VK_A)) {
-            System.out.println("A was pressed");
-        }
+
     }
 
     public void render(GameContainer gc, Renderer r) {
-
+        r.drawImage(image, gc.getInput().getMouseX(), gc.getInput().getMouseY());
     }
 
     public static void main(String[] args) {

@@ -1,9 +1,6 @@
 package com.mountech.engine;
 
 import com.mountech.events.Input;
-import org.jcp.xml.dsig.internal.dom.DOMSubTreeData;
-
-import java.awt.event.KeyEvent;
 
 public class GameContainer implements Runnable {
 
