@@ -11,6 +11,7 @@ public class GameContainer implements Runnable {
     private Window window;
     private Renderer renderer;
     private Input input;
+    private AbstractGame game;
 
     private boolean running = false;
     private final double UPDATE_CAP = 1.0 / 60.0;
@@ -18,8 +19,8 @@ public class GameContainer implements Runnable {
     private float scale = 4f;
     private String title = "MountEngine v1.0";
 
-    public GameContainer() {
-
+    public GameContainer(AbstractGame game) {
+        this.game = game;
     }
 
     public void start() {
@@ -55,13 +56,13 @@ public class GameContainer implements Runnable {
                 unprocessedTime -= UPDATE_CAP;
                 render = true;
 
+                game.update(this, (float)UPDATE_CAP);
                 input.update();
-                // TODO: update game
             }
 
             if (render) {
                 renderer.clear();
-                // TODO: Render game
+                game.render(this, renderer);
                 window.update();
             } else {
                 try {
@@ -78,10 +79,6 @@ public class GameContainer implements Runnable {
 
     }
 
-    public static void main(String[] args) {
-        GameContainer gameContainer = new GameContainer();
-        gameContainer.start();
-    }
 
     public int getWidth() {
         return width;
@@ -101,5 +98,9 @@ public class GameContainer implements Runnable {
 
     public Window getWindow() {
         return window;
+    }
+
+    public Input getInput() {
+        return input;
     }
 }
