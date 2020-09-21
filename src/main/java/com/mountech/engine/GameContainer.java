@@ -42,6 +42,10 @@ public class GameContainer implements Runnable {
         double passedTime = 0;
         double unprocessedTime = 0;
 
+        double frameTime = 0.0;
+        int frame = 0;
+        int fps = 0;
+
         while (running) {
             render = false;
             firstTime = System.nanoTime() / 1000000000.0;
@@ -49,9 +53,17 @@ public class GameContainer implements Runnable {
             lastTime = firstTime;
             unprocessedTime += passedTime;
 
+            frameTime += passedTime;
+
             while (unprocessedTime >= UPDATE_CAP) {
                 unprocessedTime -= UPDATE_CAP;
                 render = true;
+
+                if(frameTime >= 1.0) {
+                    frameTime = 0.0;
+                    fps = frame;
+                    frame = 0;
+                }
 
                 game.update(this, (float)UPDATE_CAP);
                 input.update();
@@ -60,7 +72,9 @@ public class GameContainer implements Runnable {
             if (render) {
                 renderer.clear();
                 game.render(this, renderer);
+                renderer.drawText("FPS: "+fps, 0, 0, 0xff00ffff);
                 window.update();
+                frame++;
             } else {
                 try {
                     Thread.sleep(1);
