@@ -1,19 +1,36 @@
 package com.mountech.audio;
 
+import sun.audio.AudioPlayer;
+import sun.audio.AudioStream;
+
 import javax.sound.sampled.*;
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 
 public class SoundClip {
 
+    private InputStream music;
+    private AudioStream audio;
+    private String path;
+    public SoundClip(String path) {
+        this.path = path;
+    }
+
+    public void play() {
+        try {
+            music = new FileInputStream(new File(path));
+            audio = new AudioStream(music);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        AudioPlayer.player.start(audio);
+    }
+}
+
+    /*
     private Clip clip = null;
     private FloatControl gainControl;
 
     public SoundClip(String path) {
-
-
-
         try {
             InputStream audioSrc = SoundClip.class.getResourceAsStream(path);
             InputStream bufferedIn = new BufferedInputStream(audioSrc);
@@ -75,4 +92,6 @@ public class SoundClip {
     public boolean isRunning() {
         return clip.isRunning();
     }
-}
+
+ */
+

@@ -16,7 +16,7 @@ public class GameManager extends AbstractGame {
 
     public GameManager() {
         image = new ImageTile("/test.png", 16, 16);
-        clip = new SoundClip("/audio/welcome.wav");
+        clip = new SoundClip("src/main/resources/audio/tounge.wav");
     }
 
     public void update(GameContainer gc, float dt) {
