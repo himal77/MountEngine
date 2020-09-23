@@ -9,6 +9,9 @@ import java.awt.image.DataBufferInt;
 public class Renderer {
     private int pW, pH; // pixel height and pixel width
     private int[] p; // pixel
+    private int[] zb; //zBuffer
+
+    private int zDepth = 0;
 
     private Font font = Font.STANDARD;
 
@@ -16,19 +19,35 @@ public class Renderer {
         pW = gc.getWidth();
         pH = gc.getHeight();
         p = ((DataBufferInt) gc.getWindow().getImage().getRaster().getDataBuffer()).getData(); // this will be direct access to pixel data of the image
+        zb = new int[p.length];
     }
 
     public void clear() {
         for (int i = 0; i < p.length; i++) {
             p[i] = 0;
+            zb[i] = 0;
         }
     }
 
     public void setPixel(int x, int y, int value) {
-        if (x < 0 || x >= pW || y < 0 || y >= pH || ((value >> 24) & 0xff) == 0) {
+        int alpha = (value >> 24) & 0xff;
+        if (x < 0 || x >= pW || y < 0 || y >= pH || alpha == 0) {
             return;
         }
-        p[x + y * pW] = value;
+        if (zb[x + y * pW] > zDepth) return;
+
+        if (alpha == 255) {
+            p[x + y * pW] = value;
+        } else {
+            int color = 0;
+            int pixelColor = p[x + y * pW];
+            int newRed = ((pixelColor >> 16) & 0xff) - (int) ((((pixelColor >> 16) & 0xff) - ((value >> 16) & 0xff)) * alpha / 255f);
+            int newGreen = ((pixelColor >> 8) & 0xff) - (int) ((((pixelColor >> 8) & 0xff) - ((value >> 8) & 0xff)) * alpha / 255f);
+            int newBlue = (pixelColor & 0xff) - (int) ((pixelColor & 0xff) - (value & 0xff) * alpha / 255f);
+
+
+            p[x + y * pW] = (255 << 24 | newRed << 16 | newGreen << 8 | newBlue);
+        }
     }
 
     public void drawText(String text, int offX, int offY, int color) {
@@ -50,20 +69,28 @@ public class Renderer {
         }
     }
 
-        public void drawImage(Image image, int offX, int offY) {
+    public void drawImage(Image image, int offX, int offY) {
         // Don't render code
-        if(offX < -image.getW()) return;
-        if(offY < -image.getH()) return;
-        if(offX >= pW) return;
-        if(offY >= pH) return;
+        if (offX < -image.getW()) return;
+        if (offY < -image.getH()) return;
+        if (offX >= pW) return;
+        if (offY >= pH) return;
 
         int newX = 0, newY = 0, newWidth = image.getW(), newHeight = image.getH();
 
         // Clipping image
-        if(offX < 0) { newX -= offX; }
-        if(offY < 0) { newY -= offY; }
-        if(newWidth + offX > pW) { newWidth -= (newWidth + offX - pW); }
-        if(newHeight + offY > pH) { newHeight -= (newHeight + offY - pH); }
+        if (offX < 0) {
+            newX -= offX;
+        }
+        if (offY < 0) {
+            newY -= offY;
+        }
+        if (newWidth + offX > pW) {
+            newWidth -= (newWidth + offX - pW);
+        }
+        if (newHeight + offY > pH) {
+            newHeight -= (newHeight + offY - pH);
+        }
 
         for (int y = newY; y < newHeight; y++) {
             for (int x = newX; x < newWidth; x++) {
@@ -127,14 +154,14 @@ public class Renderer {
         }
 
 
-        for(int y = newY; y <= newHeight; y++) {
+        for (int y = newY; y <= newHeight; y++) {
             setPixel(offX, y + offY, color);
             setPixel(offX + width, y + offY, color);
         }
 
-        for(int x = newX; x <= newWidth; x++) {
-            setPixel(x + offX,  offY, color);
-            setPixel(x  + offX, offY + height, color);
+        for (int x = newX; x <= newWidth; x++) {
+            setPixel(x + offX, offY, color);
+            setPixel(x + offX, offY + height, color);
         }
     }
 
@@ -160,9 +187,9 @@ public class Renderer {
             newHeight -= (newHeight + offY - pH);
         }
 
-        for(int y = newY; y <= newHeight; y++) {
-            for(int x = newX; x <= newWidth; x++) {
-                setPixel(x + offX,  y + offY, color);
+        for (int y = newY; y <= newHeight; y++) {
+            for (int x = newX; x <= newWidth; x++) {
+                setPixel(x + offX, y + offY, color);
             }
         }
     }

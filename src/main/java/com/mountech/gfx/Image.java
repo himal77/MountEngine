@@ -2,6 +2,7 @@ package com.mountech.gfx;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.FileInputStream;
 import java.io.IOException;
 
 public class Image {
@@ -12,6 +13,7 @@ public class Image {
         BufferedImage image = null;
         try {
             image = ImageIO.read(Image.class.getResourceAsStream(path));
+        //    image = ImageIO.read(new FileInputStream(path));
         } catch (IOException e) {
             e.printStackTrace();
         }

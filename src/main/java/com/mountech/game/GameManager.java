@@ -4,18 +4,21 @@ import com.mountech.audio.SoundClip;
 import com.mountech.engine.AbstractGame;
 import com.mountech.engine.GameContainer;
 import com.mountech.engine.Renderer;
+import com.mountech.gfx.Image;
 import com.mountech.gfx.ImageTile;
 
 import java.awt.event.KeyEvent;
 
 public class GameManager extends AbstractGame {
     private ImageTile image;
+    private Image fullImage;
     private SoundClip clip;
 
     private float temp = 0;
 
     public GameManager() {
-        image = new ImageTile("/test.png", 16, 16);
+        image = new ImageTile("/test2.png", 16, 16);
+        fullImage = new Image("/test2.png");
         clip = new SoundClip("src/main/resources/audio/mayalu.wav");
     }
 
@@ -30,8 +33,9 @@ public class GameManager extends AbstractGame {
     }
 
     public void render(GameContainer gc, Renderer r) {
-        r.fillRect(10 + gc.getInput().getMouseX(), 10 + gc.getInput().getMouseY(), 32, 32, 0xffffccff);
-        r.drawImageTile(image, gc.getInput().getMouseX() - 8, gc.getInput().getMouseY() - 16, (int) temp, 0);
+
+       r.drawImage(fullImage, gc.getInput().getMouseX() + 20, gc.getInput().getMouseY() + 20);
+        r.fillRect(20, 20, 50, 50, 0xffff);
     }
 
     public static void main(String[] args) {
