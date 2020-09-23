@@ -39,8 +39,8 @@ public class Renderer {
         if (alpha == 255) {
             p[x + y * pW] = value;
         } else {
-            int color = 0;
             int pixelColor = p[x + y * pW];
+
             int newRed = ((pixelColor >> 16) & 0xff) - (int) ((((pixelColor >> 16) & 0xff) - ((value >> 16) & 0xff)) * alpha / 255f);
             int newGreen = ((pixelColor >> 8) & 0xff) - (int) ((((pixelColor >> 8) & 0xff) - ((value >> 8) & 0xff)) * alpha / 255f);
             int newBlue = (pixelColor & 0xff) - (int) ((pixelColor & 0xff) - (value & 0xff) * alpha / 255f);
@@ -192,5 +192,9 @@ public class Renderer {
                 setPixel(x + offX, y + offY, color);
             }
         }
+    }
+
+    public void setzDepth(int zDepth) {
+        this.zDepth = zDepth;
     }
 }

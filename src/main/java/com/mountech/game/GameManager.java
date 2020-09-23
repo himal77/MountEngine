@@ -20,6 +20,7 @@ public class GameManager extends AbstractGame {
         image = new ImageTile("/test2.png", 16, 16);
         fullImage = new Image("/test2.png");
         clip = new SoundClip("src/main/resources/audio/mayalu.wav");
+        fullImage.setAlpha(true);
     }
 
     public void update(GameContainer gc, float dt) {
@@ -33,9 +34,10 @@ public class GameManager extends AbstractGame {
     }
 
     public void render(GameContainer gc, Renderer r) {
-
+        r.setzDepth(Integer.MAX_VALUE);
+        r.drawImage(fullImage, 20, 20);
        r.drawImage(fullImage, gc.getInput().getMouseX() + 20, gc.getInput().getMouseY() + 20);
-        r.fillRect(20, 20, 50, 50, 0xffff);
+
     }
 
     public static void main(String[] args) {
