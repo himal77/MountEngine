@@ -3,8 +3,10 @@ package com.mountech.audio;
 import sun.audio.AudioPlayer;
 import sun.audio.AudioStream;
 
-import javax.sound.sampled.*;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 public class SoundClip {
 
@@ -19,9 +21,11 @@ public class SoundClip {
         try {
             music = new FileInputStream(new File(path));
             audio = new AudioStream(music);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         AudioPlayer.player.start(audio);
     }
 }
