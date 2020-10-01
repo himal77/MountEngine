@@ -5,15 +5,19 @@ import com.mountech.gfx.Image;
 import com.mountech.gfx.ImageTile;
 
 import java.awt.image.DataBufferInt;
+import java.util.ArrayList;
 
 public class Renderer {
+    private Font font = Font.STANDARD;
+    private ArrayList<ImageRequest> imageRequest = new ArrayList<>();
+
     private int pW, pH; // pixel height and pixel width
     private int[] p; // pixel
     private int[] zb; //zBuffer
 
     private int zDepth = 0;
+    private boolean processing =false;
 
-    private Font font = Font.STANDARD;
 
     public Renderer(GameContainer gc) {
         pW = gc.getWidth();
@@ -27,6 +31,18 @@ public class Renderer {
             p[i] = 0;
             zb[i] = 0;
         }
+    }
+
+    public void process() {
+        processing = true;
+        for(int i = 0; i < imageRequest.size(); i++) {
+            ImageRequest ir = imageRequest.get(i);
+            setzDepth(ir.getzDepth());
+            ir.getImage().setAlpha(false);
+            drawImage(ir.getImage(), ir.getOffX(), ir.getOffY());
+        }
+        imageRequest.clear();
+        processing = false;
     }
 
     public void setPixel(int x, int y, int value) {
@@ -70,6 +86,11 @@ public class Renderer {
     }
 
     public void drawImage(Image image, int offX, int offY) {
+
+        if(image.isAlpha() && !processing) {
+             imageRequest.add(new ImageRequest(image, zDepth, offX, offY));
+        }
+
         // Don't render code
         if (offX < -image.getW()) return;
         if (offY < -image.getH()) return;
